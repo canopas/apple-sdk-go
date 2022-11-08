@@ -1,4 +1,4 @@
-module secret
+module github.com/canopas/apple-sdk-go/secret
 
 go 1.18
 
