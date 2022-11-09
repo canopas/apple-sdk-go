@@ -9,6 +9,10 @@ import (
 	"github.com/golang-jwt/jwt/v4"
 )
 
+const (
+	AUDIENCE = "https://appleid.apple.com"
+)
+
 type Request struct {
 	// 10-char App Id prefix found in App identifiers section
 	TeamID string
@@ -19,8 +23,18 @@ type Request struct {
 	// This is the ID of the private key
 	KeyID string
 
-	// This is the private key file (.p8). You can download it from apple console
-	ClientSecret string
+	// This is the private key file (.p8). You can download it from apple portal
+	ClientSecret []byte
+}
+
+// Returns new secret request
+func New(teamId, clientId, keyId, secret string) *Request {
+	return &Request{
+		TeamID:       teamId,
+		ClientID:     clientId,
+		KeyID:        keyId,
+		ClientSecret: []byte(secret),
+	}
 }
 
 // GenerateClientSecret returns a secret used to validate server requests
@@ -28,7 +42,7 @@ type Request struct {
 // if data is empty or wrong.
 func (req *Request) GenerateClientSecret() (string, error) {
 
-	block, _ := pem.Decode([]byte(req.ClientSecret))
+	block, _ := pem.Decode(req.ClientSecret)
 	if block == nil {
 		return "", errors.New("pem block is empty after decoding")
 	}
@@ -55,7 +69,7 @@ func (req *Request) NewRegisteredClaims() *jwt.RegisteredClaims {
 		Issuer:    req.TeamID,
 		IssuedAt:  &jwt.NumericDate{Time: now},
 		ExpiresAt: &jwt.NumericDate{Time: now.Add(time.Hour * 24 * 30)}, // 30 days
-		Audience:  jwt.ClaimStrings{"https://appleid.apple.com"},
+		Audience:  jwt.ClaimStrings{AUDIENCE},
 		Subject:   req.ClientID,
 	}
 }
