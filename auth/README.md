@@ -23,21 +23,22 @@ go get github.com/canopas/apple-sdk-go/auth
 
 req := auth.New("team-id", "client-id", "key-id", "secret-key")
 
+// To do authorization request validation with authorization code from mobile app
 resp, err := req.ValidateCode("auth-code") 
 
-// or
-
+// OR
+// To do authorization request validation with authorization code and redirect uri from web app
 resp, err := req.ValidateCodeWithRedirectURI("auth-code", "redirect-uri") 
 
-// or
-
+// OR
+// Refresh token validation request
 resp, err := req.ValidateRefreshToken("refresh-token") 
 
 if err != nil {
 	log.Fatal(err.Error())
 }
 
-// get validated user
+// get user
 user, err := resp.GetUser(resp.IDToken)
 
 if err != nil {
@@ -46,7 +47,7 @@ if err != nil {
 
 log.Println(user)
 
-// get validated user's uniqueId
+// get user's uniqueId
 id, err := resp.UniqueID(resp.IDToken)
 
 if err != nil {
@@ -55,7 +56,7 @@ if err != nil {
 
 log.Println(id)
 
-// get validated user email
+// get user email
 email, err := resp.Email(resp.IDToken)
 
 if err != nil {
@@ -64,7 +65,8 @@ if err != nil {
 
 log.Println(email)
 
-// get validated user status
+// Get user status 
+// The possible values are: 0 (or Unsupported), 1 (or Unknown), 2 (or LikelyReal)
 userStatus, err := resp.RealUserStatus(resp.IDToken)
 
 if err != nil {
