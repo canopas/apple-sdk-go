@@ -14,4 +14,4 @@ jobs:
 
       - name: Run tests
         run: |
-          cd secret && go test .
+          cd auth && go test .

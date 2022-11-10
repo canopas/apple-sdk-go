@@ -1,9 +1,12 @@
-package secret
+// secret generates the secret used for validation requests.
+package auth
 
 import (
 	"crypto/x509"
 	"encoding/pem"
 	"errors"
+	"net/http"
+	"net/url"
 	"time"
 
 	"github.com/golang-jwt/jwt/v4"
@@ -12,6 +15,10 @@ import (
 const (
 	AUDIENCE = "https://appleid.apple.com"
 )
+
+type httpClient interface {
+	PostForm(url string, data url.Values) (resp *http.Response, err error)
+}
 
 type Request struct {
 	// 10-char App Id prefix found in App identifiers section
@@ -25,6 +32,8 @@ type Request struct {
 
 	// This is the private key file (.p8). You can download it from apple portal
 	ClientSecret []byte
+
+	HttpClient httpClient
 }
 
 // Returns new secret request
@@ -34,6 +43,7 @@ func New(teamId, clientId, keyId, secret string) *Request {
 		ClientID:     clientId,
 		KeyID:        keyId,
 		ClientSecret: []byte(secret),
+		HttpClient:   &http.Client{},
 	}
 }
 
