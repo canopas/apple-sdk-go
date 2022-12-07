@@ -2,14 +2,19 @@
 package auth
 
 import (
+	"context"
 	"encoding/json"
 	"errors"
 	"net/http"
 	"net/url"
+	"strings"
 )
 
 const (
 	VALIDATION_URL = "https://appleid.apple.com/auth/token"
+	CONTENT_TYPE   = "application/x-www-form-urlencoded"
+	USER_AGENT     = "apple-sdk-go"
+	ACCEPT         = "application/json"
 )
 
 var (
@@ -53,15 +58,15 @@ type Validation interface {
 	// Validates request using the authorization code received in an authorization
 	// response sent to your app.
 	// Returns accessToken, refreshToken, idToken
-	ValidateCode(code string) (*TokenResponse, error)
+	ValidateCode(ctx context.Context, code string) (*TokenResponse, error)
 
 	// Validate request using destinatio URI provided in authorization request
 	// Returns accessToken, refreshToken, idToken
-	ValidateCodeWithRedirectURI(code, redirectURI string) (*TokenResponse, error)
+	ValidateCodeWithRedirectURI(ctx context.Context, code string, redirectURI string) (*TokenResponse, error)
 
 	// Validates given refresh token
 	// Returns accessToken and idToken
-	ValidateRefreshToken(refreshToken string) (*TokenResponse, error)
+	ValidateRefreshToken(ctx context.Context, refreshToken string) (*TokenResponse, error)
 }
 
 // Response after validation process from apple
@@ -95,38 +100,45 @@ type ErrorResponse struct {
 // Validates request using the authorization code received in an authorization
 // response sent to your app.
 // Returns TokenResponse and error
-func (req *Request) ValidateCode(code string) (*TokenResponse, error) {
+func (req *Request) ValidateCode(ctx context.Context, code string) (*TokenResponse, error) {
 	formData, err := req.newFormData(code, authGrantType, "", "")
 	if err != nil {
 		return nil, err
 	}
-	return req.doRequest(formData)
+	return req.doRequest(ctx, formData)
 }
 
 // Validate request using destinatio URI provided in authorization request
 // Returns TokenResponse and error
-func (req *Request) ValidateCodeWithRedirectURI(code, redirectURI string) (*TokenResponse, error) {
+func (req *Request) ValidateCodeWithRedirectURI(ctx context.Context, code string, redirectURI string) (*TokenResponse, error) {
 	formData, err := req.newFormData(code, authGrantType, redirectURI, "")
 	if err != nil {
 		return nil, err
 	}
-	return req.doRequest(formData)
+	return req.doRequest(ctx, formData)
 }
 
 // Validates given refresh token
 // Returns TokenResponse and error
-func (req *Request) ValidateRefreshToken(refreshToken string) (*TokenResponse, error) {
+func (req *Request) ValidateRefreshToken(ctx context.Context, refreshToken string) (*TokenResponse, error) {
 	formData, err := req.newFormData("", refreshTokenGrantType, "", refreshToken)
 	if err != nil {
 		return nil, err
 	}
-	return req.doRequest(formData)
+	return req.doRequest(ctx, formData)
 }
 
-func (req *Request) doRequest(formData url.Values) (*TokenResponse, error) {
+func (req *Request) doRequest(ctx context.Context, formData url.Values) (*TokenResponse, error) {
+	newReq, err := http.NewRequestWithContext(ctx, "POST", VALIDATION_URL, strings.NewReader(formData.Encode()))
+	if err != nil {
+		return nil, err
+	}
 
-	response, err := req.HttpClient.PostForm(VALIDATION_URL, formData)
+	newReq.Header.Add("content-type", CONTENT_TYPE)
+	newReq.Header.Add("accept", ACCEPT)
+	newReq.Header.Add("user-agent", USER_AGENT)
 
+	response, err := req.HttpClient.Do(newReq)
 	if err != nil {
 		return nil, err
 	}

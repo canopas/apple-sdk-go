@@ -1,6 +1,7 @@
 package auth
 
 import (
+	"context"
 	"errors"
 
 	"net/http"
@@ -17,13 +18,13 @@ type MockedHTTPClient struct {
 }
 
 // Mocked function PostForm that does not call any server, just return the expected response.
-func (m *MockedHTTPClient) PostForm(url string, data url.Values) (resp *http.Response, err error) {
+func (m *MockedHTTPClient) Do(req *http.Request) (resp *http.Response, err error) {
 	return resp, errors.New(InvalidClientMsg)
 }
 
 func TestNew(t *testing.T) {
 	expected := request()
-	got := New("1234567890", "com.example.app", "abc123def4", "")
+	got := NewClient("1234567890", "com.example.app", "abc123def4", "")
 	assert.Equal(t, expected, got)
 }
 
@@ -49,7 +50,7 @@ func TestDoRequest(t *testing.T) {
 
 	vReq := request()
 	vReq.HttpClient = new(MockedHTTPClient)
-	gotResp, gotErr := vReq.doRequest(formData())
+	gotResp, gotErr := vReq.doRequest(context.Background(), formData())
 
 	assert.Equal(t, expectedErr, gotErr)
 	assert.NotEqual(t, nil, gotResp)
