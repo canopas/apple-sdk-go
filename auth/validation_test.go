@@ -24,7 +24,7 @@ func (m *MockedHTTPClient) Do(req *http.Request) (resp *http.Response, err error
 
 func TestNew(t *testing.T) {
 	expected := request()
-	got := New("1234567890", "com.example.app", "abc123def4", "")
+	got := NewClient("1234567890", "com.example.app", "abc123def4", "")
 	assert.Equal(t, expected, got)
 }
 
