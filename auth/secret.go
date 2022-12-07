@@ -6,7 +6,6 @@ import (
 	"encoding/pem"
 	"errors"
 	"net/http"
-	"net/url"
 	"time"
 
 	"github.com/golang-jwt/jwt/v4"
@@ -17,7 +16,7 @@ const (
 )
 
 type httpClient interface {
-	PostForm(url string, data url.Values) (resp *http.Response, err error)
+	Do(req *http.Request) (resp *http.Response, err error)
 }
 
 type Request struct {
@@ -34,17 +33,6 @@ type Request struct {
 	ClientSecret []byte
 
 	HttpClient httpClient
-}
-
-// Returns new secret request
-func New(teamId, clientId, keyId, secret string) *Request {
-	return &Request{
-		TeamID:       teamId,
-		ClientID:     clientId,
-		KeyID:        keyId,
-		ClientSecret: []byte(secret),
-		HttpClient:   &http.Client{},
-	}
 }
 
 // GenerateClientSecret returns a secret used to validate server requests

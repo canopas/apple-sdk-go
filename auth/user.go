@@ -51,27 +51,27 @@ func (c *Claims) GetClaims(idToken string) (jwt.MapClaims, error) {
 }
 
 // UniqueID returns the unique subject ID to identify the user
-func (resp *TokenResponse) UniqueID(idToken string) (string, error) {
-	claims, err := resp.Claims.GetClaims(idToken)
+func (resp *TokenResponse) UniqueID() (string, error) {
+	claims, err := resp.Claims.GetClaims(resp.IDToken)
 	return fmt.Sprintf("%v", claims["sub"]), err
 }
 
 // Email returns the user email
-func (resp *TokenResponse) Email(idToken string) (string, error) {
-	claims, err := resp.Claims.GetClaims(idToken)
+func (resp *TokenResponse) Email() (string, error) {
+	claims, err := resp.Claims.GetClaims(resp.IDToken)
 	return fmt.Sprintf("%v", claims["email"]), err
 }
 
 // RealUserStatus returns whether the user appears to be a real person.
 // The possible values are: 0 (or Unsupported), 1 (or Unknown), 2 (or LikelyReal).
-func (resp *TokenResponse) RealUserStatus(idToken string) (int, error) {
-	claims, err := resp.Claims.GetClaims(idToken)
+func (resp *TokenResponse) RealUserStatus() (int, error) {
+	claims, err := resp.Claims.GetClaims(resp.IDToken)
 	return claims["real_user_status"].(int), err
 }
 
 // GetUser will get claims, and returns the user using claims
-func (resp *TokenResponse) GetUser(idToken string) (*User, error) {
-	claims, err := resp.Claims.GetClaims(idToken)
+func (resp *TokenResponse) GetUser() (*User, error) {
+	claims, err := resp.Claims.GetClaims(resp.IDToken)
 	if err != nil {
 		return nil, err
 	}
