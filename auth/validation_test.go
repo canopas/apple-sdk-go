@@ -22,12 +22,6 @@ func (m *MockedHTTPClient) Do(req *http.Request) (resp *http.Response, err error
 	return resp, errors.New(InvalidClientMsg)
 }
 
-func TestNew(t *testing.T) {
-	expected := request()
-	got := NewClient("1234567890", "com.example.app", "abc123def4", "")
-	assert.Equal(t, expected, got)
-}
-
 func TestErrorResponse(t *testing.T) {
 	expected := errors.New("The requested scope is invalid.")
 	got := errorResponse(ErrorResponse{
