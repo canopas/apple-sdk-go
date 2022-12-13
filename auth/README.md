@@ -21,7 +21,12 @@ go get github.com/canopas/apple-sdk-go/auth
 
 ```go
 
-req := auth.New("team-id", "client-id", "key-id", "secret-key")
+// create auth client
+req, err := auth.NewClient("team-id", "client-id", "key-id", "secret-key-file-path")
+
+if err != nil {
+	log.Fatal(err.Error())
+}
 
 // To do authorization request validation with authorization code from mobile app
 resp, err := req.ValidateCode(context.Background(), "auth-code") 
