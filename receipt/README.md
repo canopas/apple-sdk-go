@@ -17,7 +17,7 @@ go get github.com/canopas/apple-sdk-go/receipt
 ```go
 
 // Create new IAP request with default client
-client := receipt.New()
+client := receipt.WithDefaultClient()
 
 // OR
 // Create new IAP request with custom client
@@ -25,7 +25,7 @@ httpCli := &http.Client{
 	Timeout: 10 * time.Second,
 }
 
-client := receipt.NewWithClient(httpCli)
+client := receipt.WithCustomClient(httpCli)
 
 // verify receipt data
 response, err := client.Verify(context.Background(), receipt.IAPRequest{

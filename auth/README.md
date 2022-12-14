@@ -1,4 +1,4 @@
-# Go client library for signing in sure with apple
+# Go client library for signing in with apple
 
 For more information about apple sign in, please review [apple doc](https://developer.apple.com/documentation/sign_in_with_apple/sign_in_with_apple_rest_api).
 
@@ -22,7 +22,7 @@ go get github.com/canopas/apple-sdk-go/auth
 ```go
 
 // Create new secret request with default client
-req, err := auth.New("team-id", "client-id", "key-id", "secret-key-file-path")
+req, err := auth.WithDefaultClient("team-id", "client-id", "key-id", "secret-key-file-path")
 
 if err != nil {
 	log.Fatal(err.Error())
@@ -34,7 +34,7 @@ client := &http.Client{
 	Timeout: 10 * time.Second,
 }
 
-req, err := auth.NewWithClient(client, "team-id", "client-id", "key-id", "secret-key-file-path")
+req, err := auth.WithCustomClient(client, "team-id", "client-id", "key-id", "secret-key-file-path")
 
 if err != nil {
 	log.Fatal(err.Error())

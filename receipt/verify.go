@@ -20,7 +20,7 @@ const (
 )
 
 // Returns new IAP request with defult client
-func New() *Client {
+func WithDefaultClient() *Client {
 	return &Client{
 		HttpClient: &http.Client{
 			Timeout: 10 * time.Second,
@@ -29,7 +29,7 @@ func New() *Client {
 }
 
 // Returns new IAP request with given client
-func NewWithClient(client httpClient) *Client {
+func WithCustomClient(client httpClient) *Client {
 	return &Client{
 		HttpClient: client,
 	}

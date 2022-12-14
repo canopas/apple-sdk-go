@@ -10,17 +10,15 @@ import (
 var InvalidSecretFileMsg = "please specify secret key file path"
 
 // Returns new secret request with default client
-func New(teamId, clientId, keyId, secretKeyPath string) (*Request, error) {
-
+func WithDefaultClient(teamId, clientId, keyId, secretKeyPath string) (*Request, error) {
 	client := &http.Client{
 		Timeout: 10 * time.Second,
 	}
-
 	return createRequest(teamId, clientId, keyId, secretKeyPath, client)
 }
 
 // Returns new secret request with given client
-func NewWithClient(client httpClient, teamId, clientId, keyId, secretKeyPath string) (*Request, error) {
+func WithCustomClient(client httpClient, teamId, clientId, keyId, secretKeyPath string) (*Request, error) {
 	return createRequest(teamId, clientId, keyId, secretKeyPath, client)
 }
 
