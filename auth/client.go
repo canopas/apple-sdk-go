@@ -9,7 +9,7 @@ import (
 
 var InvalidSecretFileMsg = "please specify secret key file path"
 
-// Returns new secret request with defult client
+// Returns new secret request with default client
 func New(teamId, clientId, keyId, secretKeyPath string) (*Request, error) {
 
 	client := &http.Client{

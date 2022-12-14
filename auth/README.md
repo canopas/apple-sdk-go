@@ -1,6 +1,4 @@
-# Go client library for signing in user
-
-Go client library for signing in user.
+# Go client library for signing in sure with apple
 
 For more information about apple sign in, please review [apple doc](https://developer.apple.com/documentation/sign_in_with_apple/sign_in_with_apple_rest_api).
 

@@ -1,7 +1,5 @@
 # Go client library for verifying receipt-data from appstore
 
-Go client library for verifying receipt-data from appstore.
-
 For more information about appstore receipts, please review [apple doc](https://developer.apple.com/documentation/appstorereceipts).
 
 ## Install
