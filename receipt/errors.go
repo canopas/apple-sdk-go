@@ -1,3 +1,4 @@
+// errors contains all possible errors info when proccessing with app store receipt
 package receipt
 
 import "errors"
@@ -20,6 +21,7 @@ var (
 )
 
 // Returns error message by status code
+// Use this method after verifying receipt, to check errors
 func HandleErrors(status int) error {
 	var e error
 	switch status {
