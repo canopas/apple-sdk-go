@@ -21,8 +21,20 @@ go get github.com/canopas/apple-sdk-go/auth
 
 ```go
 
-// create auth client
-req, err := auth.NewClient("team-id", "client-id", "key-id", "secret-key-file-path")
+// Create new secret request with default client
+req, err := auth.New("team-id", "client-id", "key-id", "secret-key-file-path")
+
+if err != nil {
+	log.Fatal(err.Error())
+}
+
+// OR
+// Create new secret request with custom client
+client := &http.Client{
+	Timeout: 10 * time.Second,
+}
+
+req, err := auth.NewWithClient(client, "team-id", "client-id", "key-id", "secret-key-file-path")
 
 if err != nil {
 	log.Fatal(err.Error())

@@ -1,12 +1,35 @@
 package auth
 
 import (
+	"errors"
 	"io/ioutil"
 	"net/http"
+	"time"
 )
 
-// Returns new secret request
-func NewClient(teamId, clientId, keyId, secretKeyPath string) (*Request, error) {
+var InvalidSecretFileMsg = "please specify secret key file path"
+
+// Returns new secret request with defult client
+func New(teamId, clientId, keyId, secretKeyPath string) (*Request, error) {
+
+	client := &http.Client{
+		Timeout: 10 * time.Second,
+	}
+
+	return createRequest(teamId, clientId, keyId, secretKeyPath, client)
+}
+
+// Returns new secret request with given client
+func NewWithClient(client httpClient, teamId, clientId, keyId, secretKeyPath string) (*Request, error) {
+	return createRequest(teamId, clientId, keyId, secretKeyPath, client)
+}
+
+func createRequest(teamId, clientId, keyId, secretKeyPath string, client httpClient) (*Request, error) {
+
+	if secretKeyPath == "" {
+		return nil, errors.New(InvalidSecretFileMsg)
+	}
+
 	secretContent, err := ioutil.ReadFile(secretKeyPath)
 
 	if err != nil {
@@ -18,6 +41,6 @@ func NewClient(teamId, clientId, keyId, secretKeyPath string) (*Request, error) 
 		ClientID:     clientId,
 		KeyID:        keyId,
 		ClientSecret: secretContent,
-		HttpClient:   &http.Client{},
+		HttpClient:   client,
 	}, nil
 }
